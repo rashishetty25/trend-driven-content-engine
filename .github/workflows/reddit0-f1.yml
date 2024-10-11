@@ -5,7 +5,6 @@ on:
     #- cron: '0 * * * *'  # Every hour
     - cron: '*/5 * * * *'
 
-
 jobs:
   collect-data:
     runs-on: ubuntu-latest
@@ -24,13 +23,25 @@ jobs:
           pip install praw pandas
 
       - name: Collect Reddit F1 Data
+        env:  # Add the secrets here
+          CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+          USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
         run: |
           import praw
           import pandas as pd
           from datetime import datetime
           import os
 
-          reddit = praw.Reddit(client_id='Rashi', client_secret='AOmbyWYAa2vLC95Ujvut-w', user_agent='personal use script')
+          reddit = praw.Reddit(
+              client_id=os.environ['CLIENT_ID'],
+              client_secret=os.environ['CLIENT_SECRET'],
+              password=os.environ['PASSWORD'],
+              user_agent=os.environ['USER_AGENT'],
+              username=os.environ['USERNAME'],
+          )
 
           subreddit = reddit.subreddit('formula1')
           posts_data = []
