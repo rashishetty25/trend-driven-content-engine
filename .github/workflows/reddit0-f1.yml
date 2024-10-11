@@ -33,13 +33,13 @@ jobs:
           python collect_reddit_f1_data.py
 
       - name: Upload CSV
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: reddit_f1_data
           path: Reddit/reddit_f1_data_*.csv
 
       - name: Upload Master CSV
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: master_reddit_f1_data
           path: Reddit/master_reddit_f1_data.csv
