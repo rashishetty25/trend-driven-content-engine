@@ -51,7 +51,7 @@ def main():
             master_df.loc[master_df['unique_id'] == unique_id, '24_hour_popularity_upvote'] = upvote_change
             master_df.loc[master_df['unique_id'] == unique_id, '24_hour_popularity_comment'] = comment_change
         else:
-            new_row = {
+            new_row = pd.DataFrame([{
                 'unique_id': row['unique_id'],
                 'post_heading': row['post_heading'],
                 'tag': row['tag'],
@@ -61,8 +61,8 @@ def main():
                 'timestamp': row['timestamp'],
                 '24_hour_popularity_upvote': '',
                 '24_hour_popularity_comment': ''
-            }
-            master_df = pd.concat(new_row, ignore_index=True)
+            }])
+            master_df = pd.concat([master_df, new_row], ignore_index=True)
 
     master_df.to_csv(master_filename, index=False)
 
