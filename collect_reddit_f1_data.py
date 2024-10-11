@@ -62,7 +62,7 @@ def main():
                 '24_hour_popularity_upvote': '',
                 '24_hour_popularity_comment': ''
             }
-            master_df = master_df.pd.concat(new_row, ignore_index=True)
+            master_df = pd.concat(new_row, ignore_index=True)
 
     master_df.to_csv(master_filename, index=False)
 
