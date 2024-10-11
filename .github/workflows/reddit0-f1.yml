@@ -108,13 +108,13 @@ jobs:
           master_df.to_csv(master_filename, index=False)
 
       - name: Upload CSV
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: reddit_f1_data
           path: Reddit/reddit_f1_data_*.csv  # Use wildcard to upload the latest hourly CSV
 
       - name: Upload Master CSV
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: master_reddit_f1_data
           path: Reddit/master_reddit_f1_data.csv
