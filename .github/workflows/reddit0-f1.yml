@@ -22,7 +22,7 @@ jobs:
           pip install praw pandas
 
       - name: Collect Reddit F1 Data
-        env:  # Add the secrets here
+        env:  
           CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
           USERNAME: ${{ secrets.REDDIT_USERNAME }}
@@ -45,7 +45,7 @@ jobs:
           subreddit = reddit.subreddit('formula1')
           posts_data = []
 
-          for submission in subreddit.new(limit=100):  # Adjust the limit as needed
+          for submission in subreddit.new(limit=1000):
               post_data = {
                   'unique_id': submission.id,
                   'post_heading': submission.title,
