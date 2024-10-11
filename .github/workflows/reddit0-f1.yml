@@ -2,7 +2,9 @@ name: Collect Reddit F1 Data
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
+    #- cron: '0 * * * *'  # Every hour
+    - cron: '*/5 * * * *'
+
 
 jobs:
   collect-data:
