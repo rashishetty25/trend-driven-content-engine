@@ -3,6 +3,7 @@ name: Collect Reddit F1 Data
 on:
   schedule:
     - cron: '*/1 * * * *'
+  workflow_dispatch: 
 
 jobs:
   collect-data:
