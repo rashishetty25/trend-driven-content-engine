@@ -1,0 +1,36 @@
+name: Merge Reddit CSVs
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  merge_csv:
+    runs-on: ubuntu-latest  # Use the latest version of Ubuntu
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' 
+
+      - name: Install dependencies
+        run: |
+          pip install pandas  # Install pandas, add other dependencies if needed
+
+      - name: Run merge script
+        run: |
+          # Run your merge script which should handle only the last 24 CSVs
+          python merge_reddit_csvs.py  # Replace with your script name if different
+
+      - name: Commit and push master CSV (optional)
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add Reddit/master_reddit_posts.csv
+          git commit -m "Update master_reddit_posts.csv"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
