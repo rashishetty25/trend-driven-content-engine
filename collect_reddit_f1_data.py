@@ -35,8 +35,11 @@ def main():
     }
 
     for submission in subreddit.new(limit=20):  # Scraping 20 posts
+        # Get the flair tag without the prefix
+        flair_tag = submission.link_flair_text
+
         # Check if the post's flair tag is in the excluded list
-        if submission.link_flair_text in excluded_flairs:
+        if flair_tag and flair_tag in excluded_flairs:
             continue  # Skip the post if its flair is in the excluded list
 
         # Calculate post age
@@ -51,7 +54,7 @@ def main():
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'tag': submission.link_flair_text  # Collecting the flair tag
+            'tag': flair_tag  # Collecting the flair tag
         }
         posts_data.append(post_data)
 
