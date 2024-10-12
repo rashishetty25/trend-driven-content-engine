@@ -19,6 +19,30 @@ def main():
     subreddit = reddit.subreddit('formula1')
     posts_data = []
 
+    # Collect posts
+    for submission in subreddit.new(limit=20):  # Scraping 20 posts
+        # Calculate post age
+        post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
+
+        post_data = {
+            'unique_id': submission.id,
+            'post_heading': submission.title,
+            'URL': submission.url,
+            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
+            'post_age': str(post_age),
+            'upvotes': submission.ups,
+            'comments': submission.num_comments,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'tag': submission.link_flair_text  # Collecting the flair tag
+        }
+        posts_data.append(post_data)
+
+    # Create a DataFrame from the collected data
+    reddit_df = pd.DataFrame(posts_data)
+
+    # Remove the text before the colon in the 'tag' column
+    reddit_df['tag'] = reddit_df['tag'].str.split(':').str[-1].str.strip()  # Keep only the text after the last colon and strip whitespace
+
     # Define flair tags to exclude
     excluded_flairs = {
         'Off-Topic',
@@ -34,36 +58,12 @@ def main():
         'Automated Removal'
     }
 
-    for submission in subreddit.new(limit=20):  # Scraping 20 posts
-        # Get the flair tag without the prefix
-        flair_tag = submission.link_flair_text
-
-        # Check if the post's flair tag is in the excluded list
-        if flair_tag and flair_tag in excluded_flairs:
-            continue  # Skip the post if its flair is in the excluded list
-
-        # Calculate post age
-        post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
-
-        post_data = {
-            'unique_id': submission.id,
-            'post_heading': submission.title,
-            'URL': submission.url,
-            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
-            'post_age': str(post_age),
-            'upvotes': submission.ups,
-            'comments': submission.num_comments,
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'tag': flair_tag  # Collecting the flair tag
-        }
-        posts_data.append(post_data)
-
-    # Create a DataFrame from the collected data
-    reddit_df = pd.DataFrame(posts_data)
+    # Filter out non-important tags
+    filtered_reddit_df = reddit_df[~reddit_df['tag'].isin(excluded_flairs)]
 
     # Save the CSV file without seconds in the filename
     log_filename = f'Reddit/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
-    reddit_df.to_csv(log_filename, index=False)
+    filtered_reddit_df.to_csv(log_filename, index=False)
 
 if __name__ == "__main__":
     main()
