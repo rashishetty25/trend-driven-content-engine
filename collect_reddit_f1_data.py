@@ -12,6 +12,10 @@ def main():
         username=os.environ['USERNAME'],
     )
 
+    # Create Reddit folder if it doesn't exist
+    if not os.path.exists('Reddit'):
+        os.makedirs('Reddit')
+
     subreddit = reddit.subreddit('formula1')
     posts_data = []
 
