@@ -21,7 +21,8 @@ def main():
 
     # List of non-important link flair tags to filter out
     non_important_flair = [
-        'Off-Topic', 'Misc', 'Social Media', 'Video', 'Poster', 'Photo'
+        'Off-Topic', 'Misc', 'Social Media', 'Video', 'Poster', 'Photo',
+        'daily discussion', 'Discussion', 'AMA', 'Satire', ':post-moderator-removal:', 'Automated Removal'
     ]
 
     for submission in subreddit.new(limit=1000):
@@ -33,13 +34,13 @@ def main():
             post_data = {
                 'unique_id': submission.id,
                 'post_heading': submission.title,
-                'post_content': submission.selftext,
                 'URL': submission.url,
                 'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
                 'post_age': str(post_age),
                 'current_upvotes': submission.ups,
                 'current_comments': submission.num_comments,
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'tag': submission.link_flair_text  # Collecting the flair tag
             }
             posts_data.append(post_data)
 
