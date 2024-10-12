@@ -19,10 +19,12 @@ def main():
     subreddit = reddit.subreddit('formula1')
     posts_data = []
 
-    # List of non-important link flair tags to filter out with correct format
+    # List of non-important link flair tags to filter out
     non_important_flair = [
-        ':post-off-topic:', ':post-misc:', ':post-social-media:', ':post-video:', ':post-poster:', ':post-photo:',
-        ':post-daily-discussion:', ':post-discussion:', ':post-ama:', ':post-satire:', ':post-moderator-removal:', ':post-automated-removal:'
+        'post-off-topic: Off-Topic', 'post-misc: Misc', 'post-social-media: Social Media',
+        'post-video: Video', 'post-poster: Poster', 'post-photo: Photo',
+        'post-daily-discussion: Daily Discussion', 'post-discussion: Discussion',
+        'post-ama: AMA', 'post-satire: Satire', 'post-moderator-removal: Automated Removal'
     ]
 
     for submission in subreddit.new(limit=1000):
