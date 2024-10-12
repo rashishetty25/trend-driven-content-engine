@@ -19,33 +19,41 @@ def main():
     subreddit = reddit.subreddit('formula1')
     posts_data = []
 
-    # List of non-important link flair tags to filter out
-    non_important_flair = [
-        'Off-Topic', 'Misc', 'Social Media', 'Video', 'Poster', 'Photo',
-        'daily discussion', 'Discussion', 'AMA', 'Satire', ':post-moderator-removal:', 'Automated Removal'
-    ]
+    # Define flair tags to exclude
+    excluded_flairs = {
+        'Off-Topic',
+        'Misc',
+        'Social Media',
+        'Video',
+        'Poster',
+        'Photo',
+        'Daily Discussion',
+        'Discussion',
+        'AMA',
+        'Satire',
+        'Automated Removal'
+    }
 
     for submission in subreddit.new(limit=20):  # Scraping 20 posts
-        # Print flair for debugging
-        flair_text = submission.link_flair_text
+        # Check if the post's flair tag is in the excluded list
+        if submission.link_flair_text in excluded_flairs:
+            continue  # Skip the post if its flair is in the excluded list
 
-        # Check if the flair text is not None and not in the non-important list
-        if flair_text is not None and flair_text not in non_important_flair:
-            # Calculate post age
-            post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
+        # Calculate post age
+        post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
 
-            post_data = {
-                'unique_id': submission.id,
-                'post_heading': submission.title,
-                'URL': submission.url,
-                'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
-                'post_age': str(post_age),
-                'upvotes': submission.ups,
-                'comments': submission.num_comments,
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'tag': flair_text  # Collecting the flair tag
-            }
-            posts_data.append(post_data)
+        post_data = {
+            'unique_id': submission.id,
+            'post_heading': submission.title,
+            'URL': submission.url,
+            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
+            'post_age': str(post_age),
+            'upvotes': submission.ups,
+            'comments': submission.num_comments,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'tag': submission.link_flair_text  # Collecting the flair tag
+        }
+        posts_data.append(post_data)
 
     # Create a DataFrame from the collected data
     reddit_df = pd.DataFrame(posts_data)
