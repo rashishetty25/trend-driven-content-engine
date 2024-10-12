@@ -19,28 +19,29 @@ def main():
     subreddit = reddit.subreddit('formula1')
     posts_data = []
 
+    # List of non-important link flair tags to filter out
+    non_important_flair = [
+        'Off-Topic', 'Misc', 'Social Media', 'Video', 'Poster', 'Photo'
+    ]
+
     for submission in subreddit.new(limit=1000):
-        # Collect top 10 comments content
-        submission.comments.replace_more(limit=0)
-        top_comments = [comment.body for comment in submission.comments.list()[:10]]
-        top_comments_content = " | ".join(top_comments)
+        # Check if the link flair is not in the non-important list
+        if submission.link_flair_text not in non_important_flair:
+            # Calculate post age
+            post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
 
-        # Calculate post age
-        post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
-
-        post_data = {
-            'unique_id': submission.id,
-            'post_heading': submission.title,
-            'post_content': submission.selftext,
-            'top_10_comments': top_comments_content,
-            'URL': submission.url,
-            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
-            'post_age': str(post_age),
-            'current_upvotes': submission.ups,
-            'current_comments': submission.num_comments,
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        posts_data.append(post_data)
+            post_data = {
+                'unique_id': submission.id,
+                'post_heading': submission.title,
+                'post_content': submission.selftext,
+                'URL': submission.url,
+                'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
+                'post_age': str(post_age),
+                'current_upvotes': submission.ups,
+                'current_comments': submission.num_comments,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            posts_data.append(post_data)
 
     # Create a DataFrame from the collected data
     reddit_df = pd.DataFrame(posts_data)
