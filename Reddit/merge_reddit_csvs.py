@@ -44,8 +44,8 @@ def merge_reddit_csvs():
                 }
             else:
                 # Update latest values
-                popularity_dict[unique_id]['latest_upvotes'] = upvotes
-                popularity_dict[unique_id]['latest_comments'] = comments
+                popularity_dict[unique_id]['latest_upvotes'] = max(popularity_dict[unique_id]['latest_upvotes'], upvotes)
+                popularity_dict[unique_id]['latest_comments'] = max(popularity_dict[unique_id]['latest_comments'], comments)
 
         # Drop duplicates based on unique_id before appending
         current_df = current_df.drop_duplicates(subset=['unique_id'])
@@ -54,7 +54,7 @@ def merge_reddit_csvs():
         master_df = pd.concat([master_df, current_df], ignore_index=True)
 
     # Remove duplicates from master_df based on unique_id and keep the latest record
-    master_df = master_df.drop_duplicates(subset=['unique_id'], keep='last')
+    master_df = master_df.sort_values('timestamp', ascending=False).drop_duplicates(subset=['unique_id'], keep='first')
 
     # Convert popularity_dict to DataFrame
     popularity_df = pd.DataFrame.from_dict(popularity_dict, orient='index')
