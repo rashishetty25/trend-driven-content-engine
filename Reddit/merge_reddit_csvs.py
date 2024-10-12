@@ -39,9 +39,13 @@ def merge_reddit_csvs():
             # Drop unnecessary columns
             master_df.drop(columns=[col for col in master_df.columns if 'new' in col], inplace=True)
 
-    master_df['popularity_upvote'] = master_df['upvotes'] - master_df.groupby('unique_id')['upvotes'].transform('first')
-    master_df['popularity_comment'] = master_df['comments'] - master_df.groupby('unique_id')['comments'].transform('first')
+    # Calculate popularity metrics
+    first_upvotes = master_df.groupby('unique_id')['upvotes'].transform('first')
+    first_comments = master_df.groupby('unique_id')['comments'].transform('first')
 
+    # Calculate popularity as the difference from the first recorded values
+    master_df['popularity_upvote'] = master_df['upvotes'] - first_upvotes
+    master_df['popularity_comment'] = master_df['comments'] - first_comments
 
     # Save the master DataFrame to a new CSV file
     master_df.to_csv('Reddit/master_reddit_posts.csv', index=False)
