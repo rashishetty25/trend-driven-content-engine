@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 # Function to merge CSVs and calculate popularity metrics
 def merge_reddit_csvs():
     directory = 'Reddit'
-    # Get the current time and the time 24 hours ago
     now = datetime.now()
     time_threshold = now - timedelta(hours=24)
 
@@ -20,32 +19,49 @@ def merge_reddit_csvs():
     # Sort files by their modification time to process from oldest to newest
     recent_csv_files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)))
 
-    # Initialize a DataFrame to hold merged data
+    # Initialize an empty DataFrame to hold merged data and a dictionary for popularity tracking
     master_df = pd.DataFrame()
+    popularity_dict = {}
 
     for csv_file in recent_csv_files:
         # Load the current CSV
         file_path = os.path.join(directory, csv_file)
         current_df = pd.read_csv(file_path)
 
-        # Merge current_df into master_df on unique_id, keeping the most recent upvotes and comments
-        if master_df.empty:
-            master_df = current_df
-        else:
-            master_df = pd.merge(master_df, current_df, on='unique_id', how='outer', suffixes=('', '_new'))
-            # Update upvotes and comments with the most recent values
-            master_df['upvotes'] = master_df[['upvotes', 'upvotes_new']].bfill(axis=1).iloc[:, 0]
-            master_df['comments'] = master_df[['comments', 'comments_new']].bfill(axis=1).iloc[:, 0]
-            # Drop unnecessary columns
-            master_df.drop(columns=[col for col in master_df.columns if 'new' in col], inplace=True)
+        # Update popularity_dict
+        for _, row in current_df.iterrows():
+            unique_id = row['unique_id']
+            upvotes = row['upvotes']
+            comments = row['comments']
+            
+            # Initialize dictionary if unique_id is not present
+            if unique_id not in popularity_dict:
+                popularity_dict[unique_id] = {
+                    'initial_upvotes': upvotes,
+                    'initial_comments': comments,
+                    'latest_upvotes': upvotes,
+                    'latest_comments': comments
+                }
+            else:
+                # Update latest values
+                popularity_dict[unique_id]['latest_upvotes'] = upvotes
+                popularity_dict[unique_id]['latest_comments'] = comments
 
-    # Calculate popularity metrics
-    first_upvotes = master_df.groupby('unique_id')['upvotes'].transform('first')
-    first_comments = master_df.groupby('unique_id')['comments'].transform('first')
+        # Append current_df to master_df directly for later processing
+        master_df = pd.concat([master_df, current_df], ignore_index=True)
 
-    # Calculate popularity as the difference from the first recorded values
-    master_df['popularity_upvote'] = master_df['upvotes'] - first_upvotes
-    master_df['popularity_comment'] = master_df['comments'] - first_comments
+    # Convert popularity_dict to DataFrame
+    popularity_df = pd.DataFrame.from_dict(popularity_dict, orient='index')
+
+    # Merge with master_df
+    master_df = master_df.merge(popularity_df, left_on='unique_id', right_index=True, how='left')
+
+    # Calculate popularity metrics in a vectorized way
+    master_df['popularity_upvote'] = master_df['latest_upvotes'] - master_df['initial_upvotes']
+    master_df['popularity_comment'] = master_df['latest_comments'] - master_df['initial_comments']
+
+    # Drop the intermediate columns used for calculation
+    master_df.drop(columns=['latest_upvotes', 'latest_comments'], inplace=True)
 
     # Save the master DataFrame to a new CSV file
     master_df.to_csv('Reddit/master_reddit_posts.csv', index=False)
