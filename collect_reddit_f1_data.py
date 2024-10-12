@@ -20,7 +20,7 @@ def main():
     posts_data = []
 
     # Collect posts
-    for submission in subreddit.new(limit=1000):  # Scraping 20 posts
+    for submission in subreddit.new(limit=1000):  # Scraping 1000 posts
         # Calculate post age
         post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
 
@@ -28,11 +28,11 @@ def main():
             'unique_id': submission.id,
             'post_heading': submission.title,
             'URL': submission.url,
-            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
+            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d'),  # Remove time
             'post_age': str(post_age),
             'upvotes': submission.ups,
             'comments': submission.num_comments,
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'timestamp': datetime.now().strftime('%Y-%m-%d'),  # Remove time
             'tag': submission.link_flair_text  # Collecting the flair tag
         }
         posts_data.append(post_data)
