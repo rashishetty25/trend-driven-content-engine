@@ -29,8 +29,8 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add Reddit/master_reddit_posts.csv
-          git commit -m "Update master_reddit_posts.csv"
+          git add -f Reddit/master_reddit_posts.csv  # Force add the file
+          git commit -m "Update master_reddit_posts.csv" --allow-empty
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
