@@ -23,7 +23,7 @@ jobs:
       - name: Run merge script
         run: |
           # Run your merge script which should handle only the last 24 CSVs
-          python merge_reddit_csvs.py  # Replace with your script name if different
+          Reddit/python merge_reddit_csvs.py  # Replace with your script name if different
 
       - name: Commit and push master CSV (optional)
         run: |
