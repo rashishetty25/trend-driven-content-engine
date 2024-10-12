@@ -37,8 +37,8 @@ def main():
                 'URL': submission.url,
                 'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
                 'post_age': str(post_age),
-                'current_upvotes': submission.ups,
-                'current_comments': submission.num_comments,
+                'upvotes': submission.ups,
+                'comments': submission.num_comments,
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'tag': submission.link_flair_text  # Collecting the flair tag
             }
