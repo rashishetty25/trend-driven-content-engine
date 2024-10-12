@@ -20,7 +20,7 @@ def main():
     posts_data = []
 
     # Collect posts
-    for submission in subreddit.new(limit=20):  # Scraping 20 posts
+    for submission in subreddit.new(limit=1000):  # Scraping 20 posts
         # Calculate post age
         post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
 
