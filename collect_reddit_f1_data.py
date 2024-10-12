@@ -21,13 +21,14 @@ def main():
 
     # List of non-important link flair tags to filter out
     non_important_flair = [
-        'post-off-topic: Off-Topic', 'post-misc: Misc', 'post-social-media: Social Media',
-        'post-video: Video', 'post-poster: Poster', 'post-photo: Photo',
-        'post-daily-discussion: Daily Discussion', 'post-discussion: Discussion',
-        'post-ama: AMA', 'post-satire: Satire', 'post-moderator-removal: Automated Removal'
+        'Off-Topic', 'Misc', 'Social Media', 'Video', 'Poster', 'Photo',
+        'daily discussion', 'Discussion', 'AMA', 'Satire', ':post-moderator-removal:', 'Automated Removal'
     ]
 
-    for submission in subreddit.new(limit=1000):
+    for submission in subreddit.new(limit=20):  # Scraping 20 posts
+        # Print flair for debugging
+        print(f"Link Flair: {submission.link_flair_text}")
+
         # Check if the link flair is not in the non-important list
         if submission.link_flair_text not in non_important_flair:
             # Calculate post age
