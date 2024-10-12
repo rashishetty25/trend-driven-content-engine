@@ -27,11 +27,14 @@ def main():
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'URL': submission.url,
-            'timestamp': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S')
+            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S')
         }
         posts_data.append(post_data)
 
     new_df = pd.DataFrame(posts_data)
+
+    # Add a new column for the timestamp of data collection
+    new_df['timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     hourly_filename = f'Reddit/reddit_f1_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
     new_df.to_csv(hourly_filename, index=False)
@@ -41,7 +44,8 @@ def main():
         master_df = pd.read_csv(master_filename)
     else:
         master_df = pd.DataFrame(columns=['unique_id', 'post_heading', 'tag', 'upvotes', 'comments', 
-                                           'URL', 'timestamp', '24_hour_popularity_upvote', 
+                                           'URL', 'publish_time', 'timestamp', 
+                                           '24_hour_popularity_upvote', 
                                            '24_hour_popularity_comment'])
 
     for index, row in new_df.iterrows():
@@ -62,6 +66,7 @@ def main():
                 'upvotes': row['upvotes'],
                 'comments': row['comments'],
                 'URL': row['URL'],
+                'publish_time': row['publish_time'],
                 'timestamp': row['timestamp'],
                 '24_hour_popularity_upvote': '',
                 '24_hour_popularity_comment': ''
