@@ -22,17 +22,22 @@ def main():
     # Collect posts
     for submission in subreddit.new(limit=1000):  # Scraping 1000 posts
         # Calculate post age
-        post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
+        total_seconds = (datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds()
+        post_age_days = total_seconds // 86400  # Calculate full days
+        post_age_time = str(timedelta(seconds=total_seconds))  # Get full timedelta
+        
+        # Format post_age
+        post_age = f"{int(post_age_days)} days" if post_age_days > 0 else "0 days"
 
         post_data = {
             'unique_id': submission.id,
             'post_heading': submission.title,
             'URL': submission.url,
-            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d'),  # Remove time
-            'post_age': str(post_age),
+            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d'),  # Keep date
+            'post_age': post_age,  # Updated post age
             'upvotes': submission.ups,
             'comments': submission.num_comments,
-            'timestamp': datetime.now().strftime('%Y-%m-%d'),  # Remove time
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'tag': submission.link_flair_text  # Collecting the flair tag
         }
         posts_data.append(post_data)
