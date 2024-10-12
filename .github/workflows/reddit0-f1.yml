@@ -32,7 +32,7 @@ jobs:
         run: |
           python collect_reddit_f1_data.py
 
-      - name: Upload Log CSV
+      - name: Upload CSV
         uses: actions/upload-artifact@v4
         with:
           name: reddit_f1_log
@@ -46,4 +46,4 @@ jobs:
           git commit -m "Update Reddit F1 log CSV files"
           git push origin main  # Change to your branch if needed
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
