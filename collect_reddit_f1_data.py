@@ -27,10 +27,10 @@ def main():
 
     for submission in subreddit.new(limit=20):  # Scraping 20 posts
         # Print flair for debugging
-        print(f"Link Flair: {submission.link_flair_text}")
+        flair_text = submission.link_flair_text
 
-        # Check if the link flair is not in the non-important list
-        if submission.link_flair_text not in non_important_flair:
+        # Check if the flair text is not None and not in the non-important list
+        if flair_text is not None and flair_text not in non_important_flair:
             # Calculate post age
             post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
 
@@ -43,7 +43,7 @@ def main():
                 'upvotes': submission.ups,
                 'comments': submission.num_comments,
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'tag': submission.link_flair_text  # Collecting the flair tag
+                'tag': flair_text  # Collecting the flair tag
             }
             posts_data.append(post_data)
 
