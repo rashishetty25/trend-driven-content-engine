@@ -2,7 +2,7 @@ name: Collect Reddit F1 Data
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'  # Runs every hour
   workflow_dispatch: 
 
 jobs:
@@ -32,24 +32,18 @@ jobs:
         run: |
           python collect_reddit_f1_data.py
 
-      - name: Upload CSV
+      - name: Upload Log CSV
         uses: actions/upload-artifact@v4
         with:
-          name: reddit_f1_data
-          path: Reddit/reddit_f1_data_*.csv
-
-      - name: Upload Master CSV
-        uses: actions/upload-artifact@v4
-        with:
-          name: master_reddit_f1_data
-          path: Reddit/master_reddit_f1_data.csv
+          name: reddit_f1_log
+          path: Reddit/reddit_f1_log_*.csv
 
       - name: Commit and push CSV files
         run: |
-          git config --local user.email "@rashishetty25@gmail.com"
+          git config --local user.email "rashishetty25@gmail.com"
           git config --local user.name "Rashi Shetty"
           git add Reddit/*.csv
-          git commit -m "Update Reddit F1 CSV files"
+          git commit -m "Update Reddit F1 log CSV files"
           git push origin main  # Change to your branch if needed
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
