@@ -1,6 +1,6 @@
 import praw
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 def main():
@@ -20,60 +20,34 @@ def main():
     posts_data = []
 
     for submission in subreddit.new(limit=1000):
+        # Collect top 10 comments content
+        submission.comments.replace_more(limit=0)
+        top_comments = [comment.body for comment in submission.comments.list()[:10]]
+        top_comments_content = " | ".join(top_comments)
+
+        # Calculate post age
+        post_age = timedelta(seconds=(datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds())
+
         post_data = {
             'unique_id': submission.id,
             'post_heading': submission.title,
-            'tag': submission.link_flair_text,
-            'upvotes': submission.ups,
-            'comments': submission.num_comments,
+            'post_content': submission.selftext,
+            'top_10_comments': top_comments_content,
             'URL': submission.url,
-            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S')
+            'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d %H:%M:%S'),
+            'post_age': str(post_age),
+            'current_upvotes': submission.ups,
+            'current_comments': submission.num_comments,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         posts_data.append(post_data)
 
-    new_df = pd.DataFrame(posts_data)
+    # Create a DataFrame from the collected data
+    reddit_df = pd.DataFrame(posts_data)
 
-    # Add a new column for the timestamp of data collection
-    new_df['timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-    hourly_filename = f'Reddit/reddit_f1_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-    new_df.to_csv(hourly_filename, index=False)
-
-    master_filename = 'Reddit/master_reddit_f1_data.csv'
-    if os.path.exists(master_filename):
-        master_df = pd.read_csv(master_filename)
-    else:
-        master_df = pd.DataFrame(columns=['unique_id', 'post_heading', 'tag', 'upvotes', 'comments', 
-                                           'URL', 'publish_time', 'timestamp', 
-                                           '24_hour_popularity_upvote', 
-                                           '24_hour_popularity_comment'])
-
-    for index, row in new_df.iterrows():
-        unique_id = row['unique_id']
-        if unique_id in master_df['unique_id'].values:
-            existing_row = master_df.loc[master_df['unique_id'] == unique_id].iloc[0]
-            upvote_change = row['upvotes'] - existing_row['upvotes']
-            comment_change = row['comments'] - existing_row['comments']
-            master_df.loc[master_df['unique_id'] == unique_id, 'upvotes'] = row['upvotes']
-            master_df.loc[master_df['unique_id'] == unique_id, 'comments'] = row['comments']
-            master_df.loc[master_df['unique_id'] == unique_id, '24_hour_popularity_upvote'] = upvote_change
-            master_df.loc[master_df['unique_id'] == unique_id, '24_hour_popularity_comment'] = comment_change
-        else:
-            new_row = pd.DataFrame([{
-                'unique_id': row['unique_id'],
-                'post_heading': row['post_heading'],
-                'tag': row['tag'],
-                'upvotes': row['upvotes'],
-                'comments': row['comments'],
-                'URL': row['URL'],
-                'publish_time': row['publish_time'],
-                'timestamp': row['timestamp'],
-                '24_hour_popularity_upvote': '',
-                '24_hour_popularity_comment': ''
-            }])
-            master_df = pd.concat([master_df, new_row], ignore_index=True)
-
-    master_df.to_csv(master_filename, index=False)
+    # Save the CSV file without seconds in the filename
+    log_filename = f'Reddit/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
+    reddit_df.to_csv(log_filename, index=False)
 
 if __name__ == "__main__":
     main()
