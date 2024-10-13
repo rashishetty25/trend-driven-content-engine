@@ -38,12 +38,18 @@ jobs:
           name: reddit_f1_log
           path: Reddit.2/reddit_f1_log_*.csv
 
-      - name: Commit and push CSV files
+      - name: Upload JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: reddit_f1_data
+          path: Reddit.2/*.json
+
+      - name: Commit and push CSV and JSON files
         run: |
           git config --local user.email "rashishetty25@gmail.com"
           git config --local user.name "Rashi Shetty"
-          git add Reddit.2/*.csv || echo "No changes to commit"
-          git commit -m "Update Reddit F1 log CSV files" || echo "Nothing to commit"
+          git add Reddit.2/*.csv Reddit.2/*.json || echo "No changes to commit"
+          git commit -m "Update Reddit F1 log CSV and JSON files" || echo "Nothing to commit"
           git push origin main || echo "Failed to push changes"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
