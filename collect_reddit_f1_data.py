@@ -12,7 +12,6 @@ def main():
         username=os.environ['USERNAME'],
     )
 
-    # Create Reddit folder if it doesn't exist
     if not os.path.exists('Reddit.2'):
         os.makedirs('Reddit.2')
 
@@ -74,7 +73,7 @@ def main():
     filtered_reddit_df = reddit_df[~reddit_df['tag'].isin(excluded_flairs)]
 
     # Save the CSV file without seconds in the filename
-    log_filename = f'Reddit/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
+    log_filename = f'Reddit.2/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
     filtered_reddit_df.to_csv(log_filename, index=False)
 
 if __name__ == "__main__":
