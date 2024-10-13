@@ -1,20 +1,26 @@
+import os
+import json
 import praw
 import pandas as pd
 from datetime import datetime, timedelta
-import os
-import json
+
+# Get the absolute path to the directory where the script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Function to load previous data from a JSON file
 def load_previous_data(filename):
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
+    filepath = os.path.join(BASE_DIR, filename)  # Build the full file path
+    if os.path.exists(filepath):
+        with open(filepath, 'r') as file:
             return json.load(file)
     return {}
 
 # Function to save current data to a JSON file
 def save_current_data(filename, data):
-    with open(filename, 'w') as file:
+    filepath = os.path.join(BASE_DIR, filename)  # Build the full file path
+    with open(filepath, 'w') as file:
         json.dump(data, file)
+    print(f"Data saved to {filename}: {data}")
 
 def main():
     reddit = praw.Reddit(
@@ -25,8 +31,8 @@ def main():
         username=os.environ['USERNAME'],
     )
 
-    if not os.path.exists('Reddit.2'):
-        os.makedirs('Reddit.2')
+    if not os.path.exists(os.path.join(BASE_DIR, 'Reddit.2')):
+        os.makedirs(os.path.join(BASE_DIR, 'Reddit.2'))
 
     # Load previous upvotes and comments data
     previous_upvotes = load_previous_data('Reddit.2/previous_upvotes.json')
@@ -106,7 +112,7 @@ def main():
     reddit_df = pd.DataFrame(posts_data)
 
     # Save the CSV file without seconds in the filename
-    log_filename = f'Reddit.2/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
+    log_filename = os.path.join(BASE_DIR, f'Reddit.2/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv')
     reddit_df.to_csv(log_filename, index=False)
 
     # Save the updated upvotes and comments data for the next run
