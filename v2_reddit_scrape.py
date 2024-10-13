@@ -19,13 +19,15 @@ def save_current_data(filename, data):
 # Function to append new value to the key
 def append_value(key, new_value, data):
     if key not in data:
-        data[key] = []
-    # Append the new value
+        data[key] = []  # Initialize to an empty list if the key does not exist
+    elif not isinstance(data[key], list):
+        data[key] = [data[key]]  # Convert to list if it's not already a list
     data[key].append(new_value)
+    
     # Keep only the last 24 values
     if len(data[key]) > 24:
         data[key].pop(0)  # Remove the oldest value
-
+        
 def main():
     reddit = praw.Reddit(
         client_id=os.environ['CLIENT_ID'],
