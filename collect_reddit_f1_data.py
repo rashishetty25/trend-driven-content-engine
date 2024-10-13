@@ -13,8 +13,8 @@ def main():
     )
 
     # Create Reddit folder if it doesn't exist
-    if not os.path.exists('Reddit'):
-        os.makedirs('Reddit')
+    if not os.path.exists('Reddit.2'):
+        os.makedirs('Reddit.2')
 
     subreddit = reddit.subreddit('formula1')
     posts_data = []
