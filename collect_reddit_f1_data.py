@@ -20,7 +20,7 @@ def main():
     posts_data = []
 
     # Collect posts
-    for submission in subreddit.top(time_filter='hour', limit=1000):  # Scraping top posts from the last week
+    for submission in subreddit.top(time_filter='hour', limit=100):  # Scraping top posts from the last week
         # Calculate post age
         total_seconds = (datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds()
         post_age_days = total_seconds // 86400  # Calculate full days
