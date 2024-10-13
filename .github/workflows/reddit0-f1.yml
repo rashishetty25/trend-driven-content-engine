@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reddit_f1_log
-          path: Reddit/reddit_f1_log_*.csv
+          path: Reddit.2/reddit_f1_log_*.csv
 
       - name: Commit and push CSV files
         run: |
