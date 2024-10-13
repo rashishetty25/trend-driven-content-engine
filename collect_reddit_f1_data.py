@@ -29,6 +29,11 @@ def main():
         # Format post_age
         post_age = f"{int(post_age_days)} days" if post_age_days > 0 else "0 days"
 
+        post_content = submission.selftext  # or submission.url if it's a link post
+
+        # Collect top 10 comments
+        top_comments = [comment.body for comment in submission.comments.list()[:10]]
+
         post_data = {
             'unique_id': submission.id,
             'post_heading': submission.title,
@@ -38,7 +43,9 @@ def main():
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'tag': submission.link_flair_text  # Collecting the flair tag
+            'tag': submission.link_flair_text,  # Collecting the flair tag
+            'post_content': post_content,  # Collect post content
+            'top_comments': top_comments  # Collect top 10 comments
         }
         posts_data.append(post_data)
 
