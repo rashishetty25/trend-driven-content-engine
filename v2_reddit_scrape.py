@@ -48,8 +48,8 @@ def main():
 
         post_content = submission.selftext  # or submission.url if it's a link post
 
-        # Collect top 10 comments
-        top_comments = [comment.body for comment in submission.comments.list()[:10]]
+        # Collect top 10 comments, excluding AutoModerator
+        top_comments = [comment.body for comment in submission.comments.list()[:10] if comment.author and comment.author.name != "AutoModerator"]
         
         post_data = {
             'unique_id': submission.id,
