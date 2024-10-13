@@ -18,8 +18,26 @@ def main():
     subreddit = reddit.subreddit('formula1')
     posts_data = []
 
+    # Define flair tags to exclude
+    excluded_flairs = {
+        'Off-Topic',
+        'Misc',
+        'Poster',
+        'Photo',
+        'Daily Discussion',
+        'AMA',
+        'Satire',
+        'Automated Removal'
+    }
+
     # Collect posts
-    for submission in subreddit.top(time_filter='hour', limit=1000):  # Scraping top posts from the last week
+    for submission in subreddit.top(time_filter='day', limit=1000):  # On race weekends, you can set to "hour"
+        flair_tag = submission.link_flair_text
+
+        # Skip posts with excluded flair tags
+        if flair_tag and flair_tag.split(':')[-1].strip() in excluded_flairs:
+            continue  # Skip to the next post if the flair tag is excluded
+
         # Calculate post age
         total_seconds = (datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds()
         post_age_days = total_seconds // 86400  # Calculate full days
@@ -45,34 +63,16 @@ def main():
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'tag': submission.link_flair_text,  # Collecting the flair tag
+            'tag': flair_tag,
         }
         posts_data.append(post_data)
 
     # Create a DataFrame from the collected data
     reddit_df = pd.DataFrame(posts_data)
 
-    # Remove the text before the colon in the 'tag' column
-    reddit_df['tag'] = reddit_df['tag'].str.split(':').str[-1].str.strip()  # Keep only the text after the last colon and strip whitespace
-
-    # Define flair tags to exclude
-    excluded_flairs = {
-        'Off-Topic',
-        'Misc',
-        'Poster',
-        'Photo',
-        'Daily Discussion',
-        'AMA',
-        'Satire',
-        'Automated Removal'
-    }
-
-    # Filter out non-important tags
-    filtered_reddit_df = reddit_df[~reddit_df['tag'].isin(excluded_flairs)]
-
     # Save the CSV file without seconds in the filename
     log_filename = f'Reddit.2/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
-    filtered_reddit_df.to_csv(log_filename, index=False)
+    reddit_df.to_csv(log_filename, index=False)
 
 if __name__ == "__main__":
     main()
