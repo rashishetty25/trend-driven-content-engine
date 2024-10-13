@@ -63,7 +63,7 @@ def main():
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'tag': flair_tag,
+            'tag': flair_tag.split(':')[-1] if flair_tag else None,
         }
         posts_data.append(post_data)
 
