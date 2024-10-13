@@ -41,7 +41,7 @@ def main():
             'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d'),  # Keep date
             'post_age': post_age, 
             'post_content': post_content, 
-            'top_comments': top_comments  
+            'top_comments': top_comments, 
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
