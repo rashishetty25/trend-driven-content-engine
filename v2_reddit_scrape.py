@@ -2,6 +2,19 @@ import praw
 import pandas as pd
 from datetime import datetime, timedelta
 import os
+import json
+
+# Function to load previous data from a JSON file
+def load_previous_data(filename):
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            return json.load(file)
+    return {}
+
+# Function to save current data to a JSON file
+def save_current_data(filename, data):
+    with open(filename, 'w') as file:
+        json.dump(data, file)
 
 def main():
     reddit = praw.Reddit(
@@ -14,6 +27,10 @@ def main():
 
     if not os.path.exists('Reddit.2'):
         os.makedirs('Reddit.2')
+
+    # Load previous upvotes and comments data
+    previous_upvotes = load_previous_data('Reddit.2/previous_upvotes.json')
+    previous_comments = load_previous_data('Reddit.2/previous_comments.json')
 
     subreddit = reddit.subreddit('formula1')
     posts_data = []
@@ -42,7 +59,7 @@ def main():
         total_seconds = (datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds()
         post_age_days = total_seconds // 86400  # Calculate full days
         post_age_time = str(timedelta(seconds=total_seconds))  # Get full timedelta
-        
+
         # Format post_age
         post_age = f"{int(post_age_days)} days" if post_age_days > 0 else "0 days"
 
@@ -50,7 +67,23 @@ def main():
 
         # Collect top 10 comments, excluding AutoModerator
         top_comments = [comment.body for comment in submission.comments.list()[:10] if comment.author and comment.author.name != "AutoModerator"]
+
+        # Calculate growth rates
+        current_upvotes = submission.ups
+        current_comments = submission.num_comments
         
+        # Get previous values for growth rate calculation
+        previous_upvote_count = previous_upvotes.get(submission.id, current_upvotes)
+        previous_comment_count = previous_comments.get(submission.id, current_comments)
+        
+        # Calculate growth rates
+        upvotes_growth_rate = current_upvotes - previous_upvote_count
+        comments_growth_rate = current_comments - previous_comment_count
+
+        # Store current values for future reference
+        previous_upvotes[submission.id] = current_upvotes
+        previous_comments[submission.id] = current_comments
+
         post_data = {
             'unique_id': submission.id,
             'post_heading': submission.title,
@@ -60,10 +93,12 @@ def main():
             'post_age': post_age, 
             'post_content': post_content, 
             'top_comments': top_comments, 
-            'upvotes': submission.ups,
-            'comments': submission.num_comments,
+            'upvotes': current_upvotes,
+            'comments': current_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'tag': flair_tag.split(':')[-1] if flair_tag else None,
+            'upvotes_growth_rate': upvotes_growth_rate,
+            'comments_growth_rate': comments_growth_rate
         }
         posts_data.append(post_data)
 
@@ -73,6 +108,10 @@ def main():
     # Save the CSV file without seconds in the filename
     log_filename = f'Reddit.2/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
     reddit_df.to_csv(log_filename, index=False)
+
+    # Save the updated upvotes and comments data for the next run
+    save_current_data('Reddit.2/previous_upvotes.json', previous_upvotes)
+    save_current_data('Reddit.2/previous_comments.json', previous_comments)
 
 if __name__ == "__main__":
     main()
