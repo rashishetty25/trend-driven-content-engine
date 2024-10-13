@@ -1,0 +1,49 @@
+name: Collect Reddit F1 Data
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch: 
+
+jobs:
+  collect-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install praw pandas
+
+      - name: Collect Reddit F1 Data
+        env:  
+          CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+          USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+        run: |
+          python v2_reddit_scrape.py
+
+      - name: Upload CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: reddit_f1_log
+          path: Reddit.2/reddit_f1_log_*.csv
+
+      - name: Commit and push CSV files
+        run: |
+          git config --local user.email "rashishetty25@gmail.com"
+          git config --local user.name "Rashi Shetty"
+          git add Reddit/*.csv
+          git commit -m "Update Reddit F1 log CSV files"
+          git push origin main  # Change to your branch if needed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
