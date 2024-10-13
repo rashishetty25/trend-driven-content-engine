@@ -83,9 +83,13 @@ def main():
         current_upvotes = submission.ups
         current_comments = submission.num_comments
 
-        previous_upvote_count = previous_upvotes.get(submission.id, current_upvotes)
-        previous_comment_count = previous_comments.get(submission.id, current_comments)
-
+        previous_upvote_list = previous_upvotes.get(submission.id, [])
+        previous_comment_list = previous_comments.get(submission.id, [])
+        
+        # Get the last value or default to current value if list is empty
+        previous_upvote_count = previous_upvote_list[-1] if previous_upvote_list else 0
+        previous_comment_count = previous_comment_list[-1] if previous_comment_list else 0
+        
         # Calculate growth rates
         upvotes_growth_rate = current_upvotes - previous_upvote_count
         comments_growth_rate = current_comments - previous_comment_count
