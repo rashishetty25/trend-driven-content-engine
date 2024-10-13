@@ -32,7 +32,7 @@ def merge_reddit_csvs():
         master_df = pd.concat([master_df, current_df]).drop_duplicates(subset='unique_id', keep='last')
 
     # Save the master DataFrame to a new CSV file
-    master_df.to_csv('Reddit/master_reddit_posts.csv', index=False)
+    master_df.to_csv('Reddit.2/master_reddit_posts.csv', index=False)
 
 # Run the function
 if __name__ == "__main__":
