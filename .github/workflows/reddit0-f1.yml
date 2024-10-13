@@ -1,9 +1,9 @@
 name: -break- Collect Reddit F1 Data
 
-on:
-  schedule:
-    - cron: '0 * * * *'  # Runs every hour
-  workflow_dispatch: 
+#on:
+  #schedule:
+    - #cron: '0 * * * *'  # Runs every hour
+  #workflow_dispatch: 
 
 jobs:
   collect-data:
