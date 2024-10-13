@@ -32,19 +32,20 @@ def main():
 
         # Collect top 10 comments
         top_comments = [comment.body for comment in submission.comments.list()[:10]]
-
+        
         post_data = {
             'unique_id': submission.id,
             'post_heading': submission.title,
-            'URL': submission.url,
+            'link_url': submission.url,
+            'post_url': f'https://www.reddit.com{submission.permalink}',  
             'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d'),  # Keep date
-            'post_age': post_age,  # Updated post age
+            'post_age': post_age, 
+            'post_content': post_content, 
+            'top_comments': top_comments  
             'upvotes': submission.ups,
             'comments': submission.num_comments,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'tag': submission.link_flair_text,  # Collecting the flair tag
-            'post_content': post_content,  # Collect post content
-            'top_comments': top_comments  # Collect top 10 comments
         }
         posts_data.append(post_data)
 
@@ -58,12 +59,9 @@ def main():
     excluded_flairs = {
         'Off-Topic',
         'Misc',
-        'Social Media',
-        'Video',
         'Poster',
         'Photo',
         'Daily Discussion',
-        'Discussion',
         'AMA',
         'Satire',
         'Automated Removal'
