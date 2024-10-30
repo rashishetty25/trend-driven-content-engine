@@ -82,6 +82,9 @@ def main():
         append_value(submission.id, estimated_downvotes, previous_downvotes)
         append_value(submission.id, current_upvote_ratio, previous_upvote_ratios)
 
+        upvotes_growth_rate = current_upvotes - previous_upvote_count
+        comments_growth_rate = current_comments - previous_comment_count
+
         post_data = {
             'unique_id': submission.id,
             'post_heading': submission.title,
@@ -96,6 +99,8 @@ def main():
             'comments': current_comments,
             'downvotes': estimated_downvotes,
             'upvote_ratio': current_upvote_ratio,
+            'upvotes_growth_rate': upvotes_growth_rate,
+            'comments_growth_rate': comments_growth_rate,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'tag': flair_tag.split(':')[-1] if flair_tag else None
         }
