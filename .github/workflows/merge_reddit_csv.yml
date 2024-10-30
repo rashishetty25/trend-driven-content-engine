@@ -22,7 +22,7 @@ jobs:
 
       - name: Run merge script
         run: |
-          python Reddit.2/merge_reddit_csvs.py  
+          python Reddit.3/merge_reddit_csvs.py  
 
       - name: Commit and push master CSV (optional)
         run: |
