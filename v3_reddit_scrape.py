@@ -52,28 +52,31 @@ def main():
 
         total_seconds = (datetime.utcnow() - datetime.utcfromtimestamp(submission.created_utc)).total_seconds()
         post_age_days = total_seconds // 86400
-        post_age_time = str(timedelta(seconds=total_seconds))
         post_age = f"{int(post_age_days)} days" if post_age_days > 0 else "0 days"
 
         post_content = submission.selftext
-        top_comments = [comment.body for comment in submission.comments.list()[:10] if comment.author and comment.author.name != "AutoModerator"]
+        total_upvotes_comments = 0
+        total_downvotes_comments = 0
+        
+        submission.comments.replace_more(limit=0) 
+        for comment in submission.comments.list()[:10]:
+            if comment.author and comment.author.name != "AutoModerator":
+                total_upvotes_comments += comment.ups
+                total_downvotes_comments += max(comment.score * -1, 0)  
 
         current_upvotes = submission.ups
         current_comments = submission.num_comments
         
-        # Calculate downvotes
         previous_upvote_count = previous_upvotes.get(submission.id, [0])[-1]
         estimated_downvotes = current_upvotes - previous_upvote_count
 
         previous_comment_count = previous_comments.get(submission.id, [0])[-1]
         
-        # Calculate upvote ratio
         if current_upvotes + estimated_downvotes > 0:
             current_upvote_ratio = current_upvotes / (current_upvotes + estimated_downvotes)
         else:
-            current_upvote_ratio = 0  # Avoid division by zero
+            current_upvote_ratio = 0  
 
-        # Append values for tracking
         append_value(submission.id, current_upvotes, previous_upvotes)
         append_value(submission.id, current_comments, previous_comments)
         append_value(submission.id, estimated_downvotes, previous_downvotes)
@@ -87,7 +90,8 @@ def main():
             'publish_time': datetime.utcfromtimestamp(submission.created_utc).strftime('%Y-%m-%d'),
             'post_age': post_age,
             'post_content': post_content,
-            'top_comments': top_comments,
+            'total_upvotes_comments': total_upvotes_comments, 
+            'total_downvotes_comments': total_downvotes_comments, 
             'upvotes': current_upvotes,
             'comments': current_comments,
             'downvotes': estimated_downvotes,
@@ -99,13 +103,13 @@ def main():
 
     reddit_df = pd.DataFrame(posts_data)
 
-    log_filename = f'Reddit.2/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
+    log_filename = f'Reddit.3/reddit_f1_log_{datetime.now().strftime("%Y%m%d_%H%M")}.csv'
     reddit_df.to_csv(log_filename, index=False)
 
-    save_current_data('Reddit.2/previous_upvotes.json', previous_upvotes)
-    save_current_data('Reddit.2/previous_comments.json', previous_comments)
-    save_current_data('Reddit.2/previous_downvotes.json', previous_downvotes)
-    save_current_data('Reddit.2/previous_upvote_ratios.json', previous_upvote_ratios)
+    save_current_data('Reddit.3/previous_upvotes.json', previous_upvotes)
+    save_current_data('Reddit.3/previous_comments.json', previous_comments)
+    save_current_data('Reddit.3/previous_downvotes.json', previous_downvotes)
+    save_current_data('Reddit.3/previous_upvote_ratios.json', previous_upvote_ratios)
 
 if __name__ == "__main__":
     main()
