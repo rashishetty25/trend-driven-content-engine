@@ -48,7 +48,7 @@ jobs:
         run: |
           git config --local user.email "rashishetty25@gmail.com"
           git config --local user.name "Rashi Shetty"
-          git add Reddit.2/*.csv Reddit.2/*.json || echo "No changes to commit"
+          git add Reddit.3/*.csv Reddit.3/*.json || echo "No changes to commit"
           git commit -m "Update Reddit F1 log CSV and JSON files" || echo "Nothing to commit"
           git push origin main || echo "Failed to push changes"
         env:
