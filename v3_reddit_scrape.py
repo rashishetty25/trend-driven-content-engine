@@ -42,6 +42,7 @@ def main():
     previous_comments = load_previous_data('Reddit.3/previous_comments.json')
     previous_downvotes = load_previous_data('Reddit.3/previous_downvotes.json')
     previous_upvote_ratios = load_previous_data('Reddit.3/previous_upvote_ratios.json')
+    previous_score = load_previous_data('Reddit.3/previous_score.json')
 
     subreddit = reddit.subreddit('formula1')
     posts_data = []
@@ -77,6 +78,7 @@ def main():
         # Collect current upvotes and comments
         current_upvotes = submission.ups
         current_comments = submission.num_comments
+        current_score = submission.score
 
         # Calculate estimated downvotes
         previous_upvote_count = previous_upvotes.get(submission.id, [0])[-1]
@@ -91,6 +93,7 @@ def main():
         append_value(submission.id, current_comments, previous_comments)
         append_value(submission.id, estimated_downvotes, previous_downvotes)
         append_value(submission.id, current_upvote_ratio, previous_upvote_ratios)
+        append_value(submission.id, current_score, previous_score)
 
         # Calculate growth rate for upvotes and comments
         upvotes_growth_rate = current_upvotes - previous_upvote_count
@@ -110,6 +113,7 @@ def main():
             'comments': current_comments,
             'downvotes': estimated_downvotes,
             'upvote_ratio': current_upvote_ratio,
+            'score': current_score,
             'upvotes_growth_rate': upvotes_growth_rate,
             'comments_growth_rate': comments_growth_rate,
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -127,6 +131,7 @@ def main():
     save_current_data('Reddit.3/previous_comments.json', previous_comments)
     save_current_data('Reddit.3/previous_downvotes.json', previous_downvotes)
     save_current_data('Reddit.3/previous_upvote_ratios.json', previous_upvote_ratios)
+    save_current_data('Reddit.3/previous_score.json', previous_score)
 
 if __name__ == "__main__":
     main()
