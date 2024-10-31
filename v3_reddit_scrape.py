@@ -51,7 +51,7 @@ def main():
     excluded_flairs = {'Off-Topic', 'Misc', 'Poster', 'Photo', 'Daily Discussion', 'AMA', 'Satire', 'Automated Removal'}
 
     # Collect top posts from the past day
-    for submission in subreddit.hot(time_filter='day', limit=1000):
+    for submission in subreddit.hot(limit=1000):
         flair_tag = submission.link_flair_text
         if flair_tag and flair_tag.split(':')[-1].strip() in excluded_flairs:
             continue
