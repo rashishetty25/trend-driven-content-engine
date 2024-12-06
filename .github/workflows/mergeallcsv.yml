@@ -1,0 +1,35 @@
+name: Merge Reddit CSVs
+
+on:
+  workflow_dispatch:  
+
+jobs:
+  merge_csv:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' 
+
+      - name: Install dependencies
+        run: |
+          pip install pandas  
+
+      - name: Run merge script
+        run: |
+          python Reddit.3/mergeall.py  
+
+      - name: Commit and push master CSV (optional)
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add -f Reddit.3/master_reddit.csv 
+          git commit -m "Update master_reddit.csv" --allow-empty
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
