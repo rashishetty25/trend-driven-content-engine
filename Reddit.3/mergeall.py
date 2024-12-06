@@ -1,5 +1,5 @@
 import pandas as pd
-import datetime from datetime
+from datetime import datetime
 import os
 
 def merge_reddit_csvs():
