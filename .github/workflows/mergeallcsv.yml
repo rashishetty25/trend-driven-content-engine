@@ -1,4 +1,4 @@
-name: Merge Reddit CSVs
+name: Merge ALL Reddit CSVs
 
 on:
   workflow_dispatch:  
