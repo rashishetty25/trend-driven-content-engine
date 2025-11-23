@@ -1,0 +1,83 @@
+unique_id,post_heading,post_url,publish_time,tag,post_content,top_comments,upvotes,comments,upvote_ratio,score,total_upvotes_comments,total_score_comments,upvotes_growth_rate,comments_growth_rate,upvote_ratio_growth_rate,score_growth_rate
+1p3ridf,"Oscar Piastri grilled on social media repost indicating McLaren is favouring Lando Norris - ""Maybe I accidentally did it. Obviously, it was not intentional""",https://www.reddit.com/r/formula1/comments/1p3ridf/oscar_piastri_grilled_on_social_media_repost/,2025-11-22, News,,"[""So uh... no one else uses Instagram or what? That repost button when you're scrolling through reels is so easy to accidentally press and it doesn't even popup or prompt you telling you you did it."", 'The insta repost button is very inconveniently placed', 'I feel like fans of sports need to be reminded Athletes ARE PEOPLE TOO. Fan are actual knobs. Crossing over lines and harassing others.', 'The concept of doomscrolling on your official account with 5 million followers...', 'You’d have thought celebs would be wise enough to have alts to doom scroll/ heart stuff that might be risky. One wrong click and it’s high scrutiny', 'There’s a way to turn it off in the settings. They should teach drivers that. I accidentally reposted soft gay corn while trying to immediately swipe away', '""I understand that without my agreement, the algorithm may have mistakenly registered an interaction. There was absolutely no intent behind it. I request that no unnecessary assumptions be made.""', 'Wasnt it later said it was done by his social media manager or something', '""Oi mate, why did you repost a pic of *my* girlfriend in a bikini?!""\n\n""Sorry, must\'ve slipped while I was having a wank.""', 'Yall are addicted to drama.\xa0']",1637,166,0.97,1637,5740,5740,6,-1,0.0,6
+1p3qyna,28% of all wet tyre laps since Bahrain 2023 took place in Las Vegas Qualifying 2025,https://www.reddit.com/r/formula1/comments/1p3qyna/28_of_all_wet_tyre_laps_since_bahrain_2023_took/,2025-11-22, Statistics,"Just out interest pulled stints data from openf1, which doesn’t have data before 2023 unfortunately - I wanted to compare the whole ground effect era really
+
+This is across all drivers in practice, quali, and race. 
+
+Since 2023, 874 laps have been completed on wet tyres across 15 sessions, 247 of them were this qualifying
+
+If anybody wants to play with the data here’s the typescript code:
+
+    // Only has data from start of 2023 onwards
+    
+    const data = await fetch('https://api.openf1.org/v1/stints?compound=WET')
+    
+    const array = (await data.json()) as Array<{
+      session_key: number
+      lap_start: number
+      lap_end: number
+      compound: 'WET' | (string & {})
+    }>
+    
+    console.log(
+      array
+        .filter((item) => item.compound === 'WET')
+        .map((item) => ({
+          session: item.session_key,
+          isLasVegasQuali: item.session_key === 9854,
+          laps: item.lap_end - item.lap_start,
+        }))
+        .reduce(
+          (agg, item) => {
+            if (item.isLasVegasQuali) {
+              agg.vegasQualiLapsTotal += item.laps
+            } else {
+              agg.otherLapsTotal += item.laps
+            }
+            agg.total += item.laps
+    
+            agg.sessionCodes.add(item.session)
+            agg.uniqueSessions = agg.sessionCodes.size
+    
+            agg.percent = Math.round((agg.vegasQualiLapsTotal / agg.total) * 100)
+    
+            return agg
+          },
+          {
+            otherLapsTotal: 0,
+            vegasQualiLapsTotal: 0,
+            sessionCodes: new Set<number>(),
+            uniqueSessions: 0,
+            total: 0,
+            percent: 0,
+          }
+        )
+    )
+
+","['The rest were in Monaco 2023 and Brazil 2024?', 'Canada 2022 is the last qualifying session I can remember with field wide full wet use.\n\n\nI imagine the low grip nature of the circuit played a part', 'i would love to see a full wet qualifying session for singapore and monaco', 'Best quali sessions I have seen (IMO).\n\n\nI loved the fact that it was just a procession of lap improvements, constant fast laps and hardly any queuing/out and in laps.', 'That’s kinda sad', 'Mad stat, it just shows they would normally Red Flag tis but they are trying so hard to push this tacky excuse of a race that they needed it to go ahead, especially given the 500 million investment', 'Can’t forget the (Haas)terclass stint at the start of Canada 2024', 'Heading out so I can’t go deeper into the analysis but I’d expect to see something like that! It’s crazy a quali session can rank so high given it’s only averaging 13-14 laps total per driver, red flags during races have basically made the tyre useless', 'They were talking about it on f1tv, apparently the chunkier, softer thread of the full wet lets it move around more and get temperature into the tire quicker and easier', ""You weren't there for 2023?""]",794,26,0.98,794,918,918,1,0,0.0,1
+1p3rpvi,Ferrari are on course to lose an F1 record they've held since 2004,https://www.reddit.com/r/formula1/comments/1p3rpvi/ferrari_are_on_course_to_lose_an_f1_record_theyve/,2025-11-22, Statistics,,"['Weird timing to put this out now when the article itself says that Ferrari engines are still 10 race wins ahead of Mercedes engines. Ferrari will still be in the lead by the end of this season. They will be at real threat of losing the record next year if Mercedes ends up having the best engine under the new regs. \n\nThe turbo hybrid era from 2014 has really enabled Mercedes to catch up. By 2013 a Ferrari engine had 222 race wins while a Mercedes engine had 99 race wins. \n\nNow 12 years later they’re only 10 race wins apart with Ferrari engines having won 27 races and Merceds engines having won 140 races.', 'No Ferrari power units won races in 2014, 2016, or 2020. This article is confusing.', 'And Lewis saw all this mess, lack of performance, and inconsistencies for years, and decided that this would be the best place to go and finish his historic career. My friend, if you had called me — me, a nobody — I would have told you…', ""This is so misleading. Between 2009 and end 2013, Renault were the most successful engine builder. Despite having the worst engine.\n\nThere isn't an engine championship."", 'Also Ferrari has been hesitant to sell its latest engine especially to a good team. Their engines have only been sold to Toro Rosso, Sauber and Haas. Teams that have not broken into the top 5 on merit for the period they used Ferrari engines. So far only once has a Ferrari engine won outside Ferrari that was Vettel in his Toro Rosso at Monza.', 'Mercedes engines have almost overtaken Ferrari despite Ferrari having a 44 year head start.', ""I think it is just because this year Merc has wins (2), and Ferrari has none (sprint don't count)."", 'Mercedes had caught up in 2013 until Silverstone where tyre-gate had an end result of the FIA handing RBR the title on a silver platter.', ""The record is that they've took over the most successful engine manufacturer in F1 and maintained it since 2004.\n\nNot that they're winning at least once every single season since 2004.""]",536,66,0.93,536,1581,1581,-2,0,0.0,-2
+1p3vswb,Las Vegas GP Qualifying - Teammate Gaps,https://www.reddit.com/r/formula1/comments/1p3vswb/las_vegas_gp_qualifying_teammate_gaps/,2025-11-22, Statistics,Half the grid couldn't fit in the image...,"['Half of them are still in Brazil 😭', 'Other 5 are out of the frame? OMG', 'Damn, the gaps between George and Kimi and Max and Yuki were brutal in Q1.', 'Wym they couldn’t fit. Can’t you just make the image longer? lol', ""Imagine being Kimi Antonelli and you're 3 seconds off your teammate, and that's not even the worst gap on the grid!"", 'Someone earlier wrote that Piastri went from Kimi 2005 to Kimi 2014 in a single season and man I’ve never seen a fumble like this', 'Bearmans car broke halfway though his lap and was only a tenth off, hella impressive', 'Honestly Stroll was doing great until he decided to go Inter alone in Q2. Not sure why he took that gamble.', 'well at least alex made it onto the image :D', 'Yuki just finished q1 in Brazil 😤']",365,80,0.91,365,1260,1260,-4,0,0.0,-4
+1p3v6hy,"Albon vs Sainz at Battlebots, video live now at this link",https://www.reddit.com/r/formula1/comments/1p3v6hy/albon_vs_sainz_at_battlebots_video_live_now_at/,2025-11-22, Video,,"['I absolutely love how utterly freaked out Carlos is by the dog and the kickboxing robot.', ""I'm always surprised by how large these battle bots are"", ""As a battlebots fan it was really cool seeing such old legends of battlebots duke it out again lol. Witch Doctor and Hypershock have a ton of history and it's awesome to see them in action again"", 'This was so much fun!!! Love how excited Alex was lol, and what the hell is up with those robots...', 'This was great but kind of rubs in the disappointment of there being no battlebot shows during race weekend.\n\n\nThe battlebots Vegas arena is inside the F1 ticketed area, but surely there are enough F1 fans that would love to pay for a battlebot show during race weekend.\n\n\nSeems like a massive missed opportunity.', 'Love to see my favourite team collaborate with one of my biggest interests outside of F1. Great to see Alex and Carlos enjoying it too!', ""I've recently watched a robot fight on yt.. I have to say it's so entertainment lol... It was a different show tbh but I totally enjoyed it.. Would I like to go to watch a football game or such event? I think I would choice this one"", 'Super fun and a very fun combo with F1, it fits so well.', 'Carlos looking for the exit after seeing the kickboxing robot', 'I love when he was like ""that\'s scary, no?"" lmao. Or when he was on about being surrounded by weird things.']",207,14,0.95,207,215,215,1,0,0.0,1
+1p3z0tv,Las Vegas GP Global Race Start Time,https://www.reddit.com/r/formula1/comments/1p3z0tv/las_vegas_gp_global_race_start_time/,2025-11-22, News,,"['Not sure I have the capacity to awake that early, I must remember not to look at news and social media when I get up.', 'PAIN. Not sure if this race is going to be worth getting up at 4AM for.', 'Rip to my pals in europe \n\ni love being in the GMT+5:30 timezone, this is the latest i have to ever wake up to watch a GP, this and Australia', 'I just dont understand this start time. Too late for most of the Americas and too early for Europe.', 'I shouldn’t complain on the US East coast because most races are at reasonable times for us, but it is funny how a “home” race is from 11pm-1am. I will most definitely not be staying up to watch that live', ""Living in California, most of the F1 races are usually early in the morning. For instance, the final 2 races of this season are at 8am and 5am here. It's actually a major reason that the sport is not more popular with general sports fans around this area."", '5pm on a Sunday. Pour a drink, give the kids the iPad and tell them to bugger off. Glorious!', 'Why the fuck is this in alphabetical order? Does the ~~AI~~Graphic Designer not know how timezones work?\xa0', 'AUSSIE AUSSIE AUSSIEEE', 'Slightly off-topic, but who sorts global times in alphabetical order and not in time-zone order?!']",142,148,0.9,142,727,727,6,2,0.0,6
+1p3z3uc,Say something nice about each team,https://www.reddit.com/r/formula1/comments/1p3z3uc/say_something_nice_about_each_team/,2025-11-22, Discussion,"Tell me what has impressed you most about every team this year. For me:
+
+McLaren: They have give us a close driver battle for a lot of the year, plus the team seems to have absolutely nailed car development considering this is the final year of these regulations. 
+
+Mercedes: They have been fairly consistent throughout the season and I don't recall any major strategy errors. It's this sort of consistency that makes them a powerhouse and kept someone like George Russell in the running for so long.
+
+Red Bull: Outstanding resilience and Max's resurgence has been absolutely incredible to witness. There was of course the huge controversy and turbulence with the Horner fiasco, but the team seems to have moved past it fairly successfully and swiftly.
+
+Ferrari: The team has always tried to do something different and make something of a difficult year. There have obviously been some serious issues, but I respect the team throwing the dice on some strategies. 
+
+Williams: What an amazing demonstration of team evolution and new organisation can achieve! JV should be incredibly proud of what has happened and looks set to continue happening. 
+
+Racing Bulls: Always in the shadow of the bigger sister team, but has been punching way above its weight. The one-lap pace has been awesome and there seems to be a lot of effort behind the scenes to train the newer drivers. 
+
+Aston Martin: I think their investments into new personnel this year will see them have a similar resurgence to Williams in the coming years. They just need to be cut-throat and efficient to make it happen as soon as possible with the new regulations. 
+
+Haas: For a team that is notoriously small and underfunded, they are achieving some excellent results (especially with Bearman) and doing all this with new drivers and personnel has shown how well the organisation is blending behind the scenes. 
+
+Kick Sauber: Another team that has managed to punch above its weight by taking advantage of some chaotic moments and utilising unorthodox strategies. Nico's podium obviously being a standout moment! 
+
+Alpine: After a turbulent start to the year with lots of controversy around driver changes, personnel changes, and what seemed like a lack of cohesion, the French outfit has shown some flashes of brilliance in the second half of the year when they get everything lined up. ","['Alpine is from France, and France has the Eiffel Tower. That’s kinda nice', 'All teams increased their profits.', ""Blessed Haas using that Ferrari engine to make even\xa0jenson ' the human sybian' button a bit envious of their ability to randomly out qualify Ferrari\xa0"", 'Ferrari has Lewis and Charles.', 'Red Bull: Got rid of Horny Spice', 'You know ferrari is cooked when the only good thing you can say about them is their strategy', 'Aston Martin is green', 'Alpine: the best worst team in history\xa0', 'Ferrari: always entertaining.']",35,62,0.62,35,679,679,-3,1,-0.010000000000000009,-3
+1p3yu3n,[George Russell] Human v Robot. Made a mega video w/ @mrbeast. OUT NOW,https://www.reddit.com/r/formula1/comments/1p3yu3n/george_russell_human_v_robot_made_a_mega_video_w/,2025-11-22, Social Media,,"['Nah, I’m good.', 'No wonder he wanted to do less media in his new contract lmao poor George', 'oh fuck this', ""Yeahhhh nooo. I'm not going to watch that"", 'GTFO.', 'Well this is embarassing', 'Mr. Shit? Nah im good Russell thanks', 'George NO', 'Fuck Mr. Beast']",0,63,0.25,0,1408,1408,0,0,0.0,0
